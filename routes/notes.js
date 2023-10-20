@@ -35,22 +35,43 @@ notes.post('/', (req, res) => {
   }
 });
 
+// notes.delete('/:id', (req, res) => {
+//   console.info(`${req.method} request received to delete a note`);
+
+//   const noteToDelete = req.params.id;
+  
+//   readFromFile('./db/db.json').then((data) => {
+//     const notesData = JSON.parse(data);
+//     for (let i = 0; i < notesData.length; i++) {
+//       const noteId = notesData[i].id;
+//       if (noteId === noteToDelete) {
+//         notesData.splice(i, 1)
+//       }
+//     } return notesData
+//   })
+//   .then((notesData) => writeToFile('./db/db.json', notesData))
+// });
+
 notes.delete('/:id', (req, res) => {
   console.info(`${req.method} request received to delete a note`);
 
   const noteToDelete = req.params.id;
   
   readFromFile('./db/db.json').then((data) => {
-    const notesData = JSON.parse(data);
-    for (let i = 0; i < notesData.length; i++) {
-      const noteId = notesData[i].id;
-      if (noteId === noteToDelete) {
-        notesData.splice(i, 1)
+      const notesData = JSON.parse(data);
+      for (let i = 0; i < notesData.length; i++) {
+        const noteId = notesData[i].id;
+        if (noteId === noteToDelete) {
+          notesData.splice(i, 1);
+        }
       }
-    }
-
-    writeToFile('./db/db.json', notesData)
-  });
+      return notesData;
+    })
+    .then((notesData) => writeToFile('./db/db.json', notesData))
+    .then(() => {
+      // Send a response to the client to indicate success
+      res.json({ message: 'Note deleted successfully' });
+    })
 });
 
 module.exports = notes;
